@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+
+# Allow crawling of public pages
+Allow: /login
+Allow: /register
+
+# Disallow private/authenticated areas
+Disallow: /habits
+Disallow: /dashboard
