@@ -1,14 +1,11 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState } from 'react';
 import { CheckCircle2, Circle, MoreHorizontal, Edit3, Trash2, X, Check } from 'lucide-react';
 import DeleteModal from './DeleteModal';
-
 const HabitCard = ({habit, onToggle, onUpdate, onDelete}) => {
   const [showMenu, setShowMenu] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState(habit.title);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const menuRef = useRef(null);
-  
   const today = new Date().toISOString().slice(0, 10);
   const todayRecord = habit.records.find(r => r.date === today);
   const isDone = todayRecord?.done || false;
@@ -19,23 +16,6 @@ const HabitCard = ({habit, onToggle, onUpdate, onDelete}) => {
     if (record.done) streak++;
     else break;
   }
-
-  // Close menu when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (menuRef.current && !menuRef.current.contains(event.target)) {
-        setShowMenu(false);
-      }
-    };
-
-    if (showMenu) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [showMenu]);
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -58,7 +38,6 @@ const HabitCard = ({habit, onToggle, onUpdate, onDelete}) => {
     setShowDeleteModal(true);
     setShowMenu(false);
   };
-  
   const handleConfirmDelete = () => {
     onDelete(habit._id);
     setShowDeleteModal(false);
@@ -70,7 +49,7 @@ const HabitCard = ({habit, onToggle, onUpdate, onDelete}) => {
 
   return (
     <>
-      <div className="bg-white rounded-3xl p-6 shadow-sm border border-stone-200 hover:shadow-lg hover:border-stone-300 transition-all duration-300 relative">
+      <div className="bg-white rounded-3xl p-6 shadow-sm border border-stone-200 hover:shadow-lg hover:border-stone-300 transition-all duration-300">
         <div className="flex items-center justify-between">
           <div className="flex-1">
             {isEditing ? (
@@ -109,7 +88,7 @@ const HabitCard = ({habit, onToggle, onUpdate, onDelete}) => {
           
           <div className="flex items-center gap-2">
             {/* Menu Button */}
-            <div className="relative" ref={menuRef}>
+            <div className="relative">
               <button
                 onClick={() => setShowMenu(!showMenu)}
                 className="p-2 text-stone-400 hover:text-stone-600 hover:bg-stone-100 rounded-xl transition-colors"
@@ -118,7 +97,7 @@ const HabitCard = ({habit, onToggle, onUpdate, onDelete}) => {
               </button>
               
               {showMenu && (
-                <div className="absolute right-0 top-full mt-1 bg-white rounded-2xl shadow-lg border border-stone-200 py-2 min-w-[120px] z-50">
+                <div className="absolute right-0 top-10 bg-white rounded-2xl shadow-lg border border-stone-200 py-2 min-w-[120px] z-10">
                   <button
                     onClick={handleEdit}
                     className="w-full flex items-center gap-2 px-4 py-2 text-sm text-stone-700 hover:bg-stone-50 transition-colors"
@@ -164,8 +143,15 @@ const HabitCard = ({habit, onToggle, onUpdate, onDelete}) => {
             />
           ))}
         </div>
+        
+        {/* Click outside to close menu */}
+        {showMenu && (
+          <div 
+            className="fixed inset-0 z-0" 
+            onClick={() => setShowMenu(false)}
+          />
+        )}
       </div>
-      
       <DeleteModal
         isOpen={showDeleteModal}
         onConfirm={handleConfirmDelete}
