@@ -189,7 +189,7 @@ export default function Dashboard() {
               [...Array(3)].map((_, i) => <HabitCardSkeleton key={i} />)
             ) : habits.length === 0 ? (
               <div className="text-center py-16">
-                <div className="w-16 h-16 bg-stone-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <div className="w-16 h-16 bg-stone-100 rounded-full flex items-center justify-center mx-auto">
                   <Target className="w-8 h-8 text-stone-500" />
                 </div>
                 <h3 className="text-lg font-medium text-stone-800 mb-2">

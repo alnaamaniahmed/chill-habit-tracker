@@ -1,16 +1,26 @@
-import React, { useState } from 'react';
-import { CheckCircle2, Circle, MoreHorizontal, Edit3, Trash2, X, Check } from 'lucide-react';
-import DeleteModal from './DeleteModal';
-const HabitCard = ({habit, onToggle, onUpdate, onDelete}) => {
+import React, { useState } from "react";
+import {
+  CheckCircle2,
+  Circle,
+  MoreHorizontal,
+  Edit3,
+  Trash2,
+  X,
+  Check,
+} from "lucide-react";
+import DeleteModal from "./DeleteModal";
+const HabitCard = ({ habit, onToggle, onUpdate, onDelete }) => {
   const [showMenu, setShowMenu] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState(habit.title);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const today = new Date().toISOString().slice(0, 10);
-  const todayRecord = habit.records.find(r => r.date === today);
+  const todayRecord = habit.records.find((r) => r.date === today);
   const isDone = todayRecord?.done || false;
-  
-  const sortedRecords = habit.records.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+  const sortedRecords = habit.records.sort(
+    (a, b) => new Date(b.date) - new Date(a.date)
+  );
   let streak = 0;
   for (let record of sortedRecords) {
     if (record.done) streak++;
@@ -49,7 +59,7 @@ const HabitCard = ({habit, onToggle, onUpdate, onDelete}) => {
 
   return (
     <>
-      <div className="bg-white rounded-3xl p-6 shadow-sm border border-stone-200 hover:shadow-lg hover:border-stone-300 transition-all duration-300">
+      <div className="bg-white rounded-3xl p-6 shadow-sm border border-stone-200 hover:shadow-lg hover:border-stone-300 transition-all duration-300 mb-4">
         <div className="flex items-center justify-between">
           <div className="flex-1">
             {isEditing ? (
@@ -58,7 +68,7 @@ const HabitCard = ({habit, onToggle, onUpdate, onDelete}) => {
                   value={editTitle}
                   onChange={(e) => setEditTitle(e.target.value)}
                   className="flex-1 text-lg font-medium text-stone-900 bg-stone-50 border border-stone-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-transparent"
-                  onKeyPress={(e) => e.key === 'Enter' && handleSaveEdit()}
+                  onKeyPress={(e) => e.key === "Enter" && handleSaveEdit()}
                   autoFocus
                 />
                 <button
@@ -79,14 +89,16 @@ const HabitCard = ({habit, onToggle, onUpdate, onDelete}) => {
                 {habit.title}
               </h3>
             )}
-            
+
             <div className="flex items-center gap-6 text-sm text-stone-600">
               <span className="font-medium">{streak} day streak</span>
-              <span className="font-medium">{habit.records.filter(r => r.done).length}/7 this week</span>
+              <span className="font-medium">
+                {habit.records.filter((r) => r.done).length}/7 this week
+              </span>
             </div>
           </div>
-          
-          <div className="flex items-center gap-2">
+
+          <div className="flex items-center gap-2 mb-11">
             {/* Menu Button */}
             <div className="relative">
               <button
@@ -95,7 +107,7 @@ const HabitCard = ({habit, onToggle, onUpdate, onDelete}) => {
               >
                 <MoreHorizontal className="w-5 h-5" />
               </button>
-              
+
               {showMenu && (
                 <div className="absolute right-0 top-10 bg-white rounded-2xl shadow-lg border border-stone-200 py-2 min-w-[120px] z-10">
                   <button
@@ -116,12 +128,12 @@ const HabitCard = ({habit, onToggle, onUpdate, onDelete}) => {
               )}
             </div>
 
-            <button 
-              onClick={() => onToggle(habit._id)} 
+            <button
+              onClick={() => onToggle(habit._id)}
               className={`p-3 rounded-2xl transition-all duration-200 ${
-                isDone 
-                  ? 'bg-amber-600 text-white' 
-                  : 'bg-stone-100 hover:bg-stone-200 text-stone-500'
+                isDone
+                  ? "bg-amber-600 text-white"
+                  : "bg-stone-100 hover:bg-stone-200 text-stone-500"
               }`}
             >
               {isDone ? (
@@ -132,34 +144,36 @@ const HabitCard = ({habit, onToggle, onUpdate, onDelete}) => {
             </button>
           </div>
         </div>
-        
+
         <div className="mt-4 flex gap-1.5">
           {habit.records.slice(-7).map((record, index) => (
             <div
               key={index}
               className={`w-2 h-2 rounded-full transition-colors ${
-                record.done ? 'bg-amber-600' : 'bg-stone-300'
+                record.done ? "bg-amber-600" : "bg-stone-300"
               }`}
             />
           ))}
         </div>
-        
+
         {/* Click outside to close menu */}
         {showMenu && (
-          <div 
-            className="fixed inset-0 z-0" 
+          <div
+            className="fixed inset-0 z-0"
             onClick={() => setShowMenu(false)}
           />
         )}
       </div>
-      <DeleteModal
-        isOpen={showDeleteModal}
-        onConfirm={handleConfirmDelete}
-        onCancel={handleCancelDelete}
-        habitTitle={habit.title}
-      />
+      {showDeleteModal && (
+        <DeleteModal
+          isOpen
+          habitTitle={habit.title}
+          onCancel={handleCancelDelete}
+          onConfirm={handleConfirmDelete}
+        />
+      )}
     </>
-  )
-}
+  );
+};
 
-export default HabitCard
+export default HabitCard;
